@@ -7,7 +7,7 @@ class Job
   @queue = :test
 
   def self.perform
-    sleep 1
+    Resque.enqueue(Job)
   end
 end
 
@@ -23,6 +23,6 @@ class DedupTest < Test::Unit::TestCase
     assert_equal 1, Resque.size(:test)
     worker = Resque::Worker.new(:test)
     worker.process
-    assert_equal 0, Resque.size(:test)
+    assert_equal 1, Resque.size(:test)
   end
 end
