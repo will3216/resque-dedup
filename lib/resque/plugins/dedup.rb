@@ -23,11 +23,12 @@ module Resque
       # Cleanup the key after the job is done.
       def around_perform_lock(*args)
         begin
+          Resque.redis.del(lock(*args))
           yield
         ensure
           # Always clear the lock when we're done, even if there is an
           # error.
-          Resque.redis.del(lock(*args))
+          Resque.redis.del(lock(*args)) if Resque.redis.exists(lock(*args))
         end
       end
     end
