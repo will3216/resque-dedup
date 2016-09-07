@@ -1,7 +1,7 @@
 module Resque
   module Plugins
     module Dedup
-      VERSION = "0.0.1"
+      VERSION = "1.0.2"
 
       # Override in your job to control the lock key. It is
       # passed the same arguments as `perform`, that is, your job's
@@ -14,16 +14,20 @@ module Resque
       def locked?(*args)
         Resque.redis.exists(lock(*args))
       end
-      
+
       def before_enqueue_lock(*args)
         return false unless Resque.redis.setnx(lock(*args), true)
+        true
+      end
+
+      def before_dequeue(*args)
+        Resque.redis.del(lock(*args))
         true
       end
 
       # Cleanup the key after the job is done.
       def around_perform_lock(*args)
         begin
-          Resque.redis.del(lock(*args))
           yield
         ensure
           # Always clear the lock when we're done, even if there is an

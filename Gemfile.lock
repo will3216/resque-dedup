@@ -1,0 +1,17 @@
+PATH
+  remote: .
+  specs:
+    resque-dedup (0.0.1)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  resque-dedup!
+
+BUNDLED WITH
+   1.10.3
