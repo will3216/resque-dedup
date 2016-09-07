@@ -21,7 +21,7 @@ module Resque
       end
 
       def before_dequeue(*args)
-        Resque.redis.del(lock(*args))
+        Resque.redis.del(lock(*args)) if Resque.redis.exists(lock(*args))
         true
       end
 
